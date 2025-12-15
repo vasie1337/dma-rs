@@ -1,32 +1,31 @@
-use memprocfs::{LeechCore, Vmm};
+use memprocfs::Vmm;
 
 pub mod error;
 
+// C:\\Users\\vasie\\Desktop\\temp\\dump.dmp
+
 pub fn init() -> Result<(), error::DmaError> {
-    let leechcore_existing = match LeechCore::new(
-        "C:\\temp\\leechcore.dll",
-        "file://C:\\temp\\dump.dmp",
-        LeechCore::LC_CONFIG_PRINTF_ENABLED,
-    ) {
-        Ok(leechcore) => leechcore,
-        Err(e) => return Err(error::DmaError::InitFailed(e.to_string())),
-    };
-
-    let args = ["-printf", "-v", "-waitinitialize"].to_vec();
-
-    let vmm = match Vmm::new_from_leechcore(&leechcore_existing, &args) {
-        Ok(vmm) => vmm,
-        Err(e) => return Err(error::DmaError::InitFailed(e.to_string())),
-    };
-
-    let virtualmachine_all = match vmm.map_virtual_machine() {
-        Ok(virtualmachine_all) => virtualmachine_all,
-        Err(e) => return Err(error::DmaError::InitFailed(e.to_string())),
-    };
-
-    for virtualmachine in &*virtualmachine_all {
-        println!("{virtualmachine}");
+    let args = [
+        "-printf",
+        "-v",
+        "-waitinitialize",
+        "-device",
+        "C:\\Users\\vasie\\Desktop\\temp\\dump.dmp",
+    ]
+    .to_vec();
+    if let Ok(vmm) = Vmm::new("C:\\Users\\vasie\\Desktop\\temp\\vmm.dll", &args) {
+        println!("VMM initialized");
+        let processes = match vmm.process_list() {
+            Ok(processes) => processes,
+            Err(e) => return Err(error::DmaError::InitFailed(e.to_string())),
+        };
+        for process in &*processes {
+            println!("{process}");
+        }
+        Ok(())
+    } else {
+        Err(error::DmaError::InitFailed(
+            "Failed to initialize VMM".to_string(),
+        ))
     }
-
-    Ok(())
 }
