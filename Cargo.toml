@@ -1,0 +1,14 @@
+[package]
+name = "dma-rs"
+version = "0.1.0"
+edition = "2024"
+description = "A Rust library for hardware DMA interaction on Windows"
+repository = "https://github.com/vasie1337/dma-rs"
+keywords = ["dma", "pcie", "hardware", "memory", "forensics"]
+categories = ["hardware-support", "os::windows-apis"]
+
+[lib]
+crate-type = ["lib"]
+
+[dependencies]
+thiserror = "1.0"
