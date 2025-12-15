@@ -6,6 +6,7 @@ description = "A Rust library for hardware DMA interaction on Windows"
 repository = "https://github.com/vasie1337/dma-rs"
 keywords = ["dma", "pcie", "hardware", "memory", "forensics"]
 categories = ["hardware-support", "os::windows-apis"]
+license = "MIT"
 
 [lib]
 crate-type = ["lib"]
