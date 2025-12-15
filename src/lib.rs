@@ -1,16 +1,15 @@
 use memprocfs::{Vmm, VmmProcess};
 
 pub mod error;
+mod embedded;
 
 pub struct Dma<'a> {
     vmm: Vmm<'a>,
 }
 
 impl<'a> Dma<'a> {
-    pub fn new(vmm_dll_path: &str, device: &str) -> Result<Self, error::DmaError> {
-        if !std::path::Path::new(vmm_dll_path).exists() {
-            return Err(error::DmaError::InitFailed(format!("DLL not found at: {}", vmm_dll_path)));
-        }
+    pub fn new(device: &str) -> Result<Self, error::DmaError> {
+        let vmm_dll_path = embedded::get_vmm_dll_path()?;
 
         let args = vec!["-device", device, "-waitinitialize"];
 
